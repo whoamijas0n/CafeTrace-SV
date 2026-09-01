@@ -1,0 +1,62 @@
+version: "3.8"
+
+services:
+  # ============================================================================
+  # 1. Base de Datos Espacial PostgreSQL 15 + PostGIS
+  # ============================================================================
+  db:
+    image: postgis/postgis:15-3.3
+    container_name: cafetrace_postgis
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-cafetrace_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cafetrace_secure_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-cafetrace_db}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgis_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-cafetrace_user} -d ${POSTGRES_DB:-cafetrace_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    networks:
+      - cafetrace_network
+
+  # ============================================================================
+  # 2. Servidor Backend FastAPI Asíncrono
+  # ============================================================================
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: cafetrace_backend
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env
+    environment:
+      POSTGRES_SERVER: db
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-cafetrace_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-cafetrace_secure_password_2026}
+      POSTGRES_DB: ${POSTGRES_DB:-cafetrace_db}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app/app
+      - ./scripts:/app/scripts
+    command: ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000", "--reload"]
+    networks:
+      - cafetrace_network
+
+volumes:
+  postgis_data:
+    driver: local
+
+networks:
+  cafetrace_network:
+    driver: bridge
