@@ -1,5 +1,7 @@
 from fastapi import APIRouter
 from app.api.v1.endpoints import auth, farms, plots, producers
+from app.api.v1.endpoints import riesgo
+
 
 api_router = APIRouter()
 
@@ -23,4 +25,9 @@ api_router.include_router(
     plots.router,
     prefix="/plots",
     tags=["4. Parcelas & GIS Espacial"],
+)
+api_router.include_router(
+     riesgo.router, 
+     prefix="/parcelas",
+     tags=["Riesgo de Deforestación"]
 )

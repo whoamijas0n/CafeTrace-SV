@@ -38,6 +38,8 @@ class Settings(BaseSettings):
         case_sensitive=True,
         extra="ignore",
     )
+    # --- Global Forest Watch API Settings ---
+    GFW_API_KEY: str = "GFW_API_KEY"# Default API key for development
 
     # --- Project Metadata ---
     PROJECT_NAME: str = "CaféTrace SV Backend"

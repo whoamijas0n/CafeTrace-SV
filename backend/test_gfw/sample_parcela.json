@@ -1,0 +1,23 @@
+{
+  "type": "Feature",
+  "properties": {
+    "plot_id": "00000000-0000-0000-0000-000000000000",
+    "farm_id": "00000000-0000-0000-0000-000000000000",
+    "name": "Parcela de prueba (Apaneca-Ilamatepec)",
+    "variety": "Bourbon",
+    "area_hectares": 100.0,
+    "created_at": "2026-01-01T00:00:00+00:00"
+  },
+  "geometry": {
+    "type": "Polygon",
+    "coordinates": [
+      [
+        [-89.83000, 13.86000],
+        [-89.82000, 13.86000],
+        [-89.82000, 13.87000],
+        [-89.83000, 13.87000],
+        [-89.83000, 13.86000]
+      ]
+    ]
+  }
+}
